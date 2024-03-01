@@ -65,6 +65,7 @@ const Login = async (req, res) => {
         if(user.type === "restaurant"){
         let payload = {
           id: user.id,
+          name: user.name,
           email: user.email,
           avatar: user.avatar,
           type: user.type,
@@ -79,6 +80,7 @@ const Login = async (req, res) => {
       else {
         let payload = {
           id: user.id,
+          name: user.name,
           email: user.email,
           avatar: user.avatar,
           type: user.type,
