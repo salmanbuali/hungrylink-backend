@@ -4,17 +4,19 @@ const { User } = require('../models')
 
 const createMenu = async (req, res) => {
   const user = await User.findById(req.body.user._id)
-  
-  // if(user.type === "restaurant"){
-  //   const restaurant = await Rest.findById(user.restId)
-  //   console.log(restaurant)
-  //   const newMenu = await Menu.create({
-  //      restaurant: restaurant._id
-  //   })
-  //   await restaurant.update({ menu: newMenu._id })
-    
-  //  res.send(restaurant)
-  // }
+  console.log(user)
+  if(user.type === "restaurant"){
+    let restaurant = await Rest.findById(user.restId)
+    console.log(restaurant)
+    const newMenu = await Menu.create({
+       restaurant: restaurant._id
+    })
+    restaurant = await Rest.findOneAndUpdate(
+      { _id: restaurant._id },
+      { menu: newMenu._id }
+    )
+    res.send(restaurant)
+  }
 
 }
 
