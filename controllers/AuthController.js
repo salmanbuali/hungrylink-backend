@@ -14,19 +14,35 @@ const Register = async (req, res) => {
         .status(400)
         .send('A user with that email has already been registered!')
     } else {
-      if ( type === "restaurant") {
+      if (type === 'restaurant') {
         const typeRest = await Rest.create({
           menu: null,
           cuisine: null
         })
         const restId = typeRest._id
-        const user = await User.create({ name, email, passwordDigest, type, avatar, contact, address, restId })
+        const user = await User.create({
+          name,
+          email,
+          passwordDigest,
+          type,
+          avatar,
+          contact,
+          address,
+          restId
+        })
         res.send(user)
       } else {
-      const user = await User.create({ name, email, passwordDigest, type, avatar, contact, address })
-      res.send(user)
+        const user = await User.create({
+          name,
+          email,
+          passwordDigest,
+          type,
+          avatar,
+          contact,
+          address
+        })
+        res.send(user)
       }
-      
     }
   } catch (error) {
     throw error
@@ -46,13 +62,33 @@ const Login = async (req, res) => {
     )
     // If they match, constructs a payload object of values we want on the front end
     if (matched) {
-      let payload = {
-        id: user.id,
-        email: user.email
+        if(user.type === "restaurant"){
+        let payload = {
+          id: user.id,
+          email: user.email,
+          avatar: user.avatar,
+          type: user.type,
+          contact: user.contact,
+          address: user.address,
+          orders: user.orders,
+          restId: user.restId
+        }
+        let token = middleware.createToken(payload)
+        return res.send({ user: payload, token })
       }
-      // Creates our JWT and packages it with our payload to send as a response
-      let token = middleware.createToken(payload)
-      return res.send({ user: payload, token })
+      else {
+        let payload = {
+          id: user.id,
+          email: user.email,
+          avatar: user.avatar,
+          type: user.type,
+          contact: user.contact,
+          address: user.address,
+          orders: user.orders,
+        }
+        let token = middleware.createToken(payload)
+        return res.send({ user: payload, token })
+      }
     }
     res.status(401).send({ status: 'Error', msg: 'Unauthorized' })
   } catch (error) {
@@ -75,17 +111,24 @@ const UpdatePassword = async (req, res) => {
     // If they match, hashes the new password, updates the db with the new digest, then sends the user as a response
     if (matched) {
       let passwordDigest = await middleware.hashPassword(newPassword)
-      user = await User.findByIdAndUpdate(req.params.user_id, { passwordDigest })
+      user = await User.findByIdAndUpdate(req.params.user_id, {
+        passwordDigest
+      })
       let payload = {
         id: user.id,
         email: user.email
       }
       return res.send({ status: 'Password Updated!', user: payload })
     }
-    res.status(401).send({ status: 'Error', msg: 'Old Password did not match!' })
+    res
+      .status(401)
+      .send({ status: 'Error', msg: 'Old Password did not match!' })
   } catch (error) {
     console.log(error)
-    res.status(401).send({ status: 'Error', msg: 'An error has occurred updating password!' })
+    res.status(401).send({
+      status: 'Error',
+      msg: 'An error has occurred updating password!'
+    })
   }
 }
 
