@@ -1,4 +1,5 @@
 const { User } = require('../models')
+const { Rest } = require('../models')
 const middleware = require('../middleware')
 
 const Register = async (req, res) => {
@@ -7,14 +8,25 @@ const Register = async (req, res) => {
     let passwordDigest = await middleware.hashPassword(password)
 
     let existingUser = await User.findOne({ email })
+
     if (existingUser) {
       return res
         .status(400)
         .send('A user with that email has already been registered!')
     } else {
+      if ( type === "restaurant") {
+        const typeRest = await Rest.create({
+          menu: null,
+          cuisine: null
+        })
+        const restId = typeRest._id
+        const user = await User.create({ name, email, passwordDigest, type, avatar, contact, address, restId })
+        res.send(user)
+      } else {
       const user = await User.create({ name, email, passwordDigest, type, avatar, contact, address })
-      
       res.send(user)
+      }
+      
     }
   } catch (error) {
     throw error
