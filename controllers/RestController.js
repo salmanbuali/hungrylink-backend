@@ -22,7 +22,7 @@ const createMenu = async (req, res) => {
 }
 
 const createCategory = async (req, res) => {
-  const user = await User.findById(req.body._id)
+  const user = await User.findById(req.body.user._id)
   const restaurant = await Rest.findById(user.restId)
   const menu = await Menu.findById(restaurant.menu)
   const newCategory = await Category.create({
@@ -41,31 +41,45 @@ const createItem = async (req, res) => {
     name: req.body.itemName,
     price: req.body.price,
     qty: req.body.qty,
-    desc: req.body.desc.split(","),
+    desc: req.body.desc.split(','),
     pic: req.body.itemPic
   })
   await Category.updateOne(
-    {_id: req.body.categoryId},
+    { _id: req.body.categoryId },
     { $push: { items: newItem._id } }
   )
   res.send(newItem)
 }
 
+// const getRestDetails = async (req, res) => {
+//   const restDetails = await Rest.findById(req.params.restId)
+//   const userRest = await User.findOne({ restId: req.params.restId })
+//   await restDetails.populate('menu')
+//   if (restDetails.menu.categoryId != null) {
+//     for (let i = 0; i < restDetails.menu.categoryId.length; i++) {
+//       await restDetails.menu.categoryId.populate(restDetails.menu.categoryId[i])
+//     }
+//   }
+//   const response = {
+//     restDetails,
+//     userRest
+//   }
+
+//   res.send(response)
+// }
+
 const getRestDetails = async (req, res) => {
-  const restDetails = await Rest.findById(req.params.restId)
-  const userRest = await User.findOne({restId: req.params.restId})
-  await restDetails.populate('menu')
-  if(restDetails.menu.categoryId != []) {for(let i = 0; i < restDetails.menu.categoryId.length; i++) {
-    await restDetails.menu.categoryId.populate(categoryId[i])
-  }}
-  const response = {
-    restDetails,
-    userRest
-  }
+    const restDetails = await Rest.findById(req.params.restId).populate(
+      'menu.categoryId'
+    )
+    const userRest = await User.findOne({ restId: req.params.restId })
 
-  res.send(response)
+    const response = {
+      restDetails,
+      userRest
+    }
+    res.send(response)
 }
-
 
 module.exports = {
   createMenu,

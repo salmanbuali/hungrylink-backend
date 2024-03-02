@@ -48,7 +48,6 @@ const Register = async (req, res) => {
     throw error
   }
 }
-
 const Login = async (req, res) => {
   try {
     // Extracts the necessary fields from the request body
@@ -71,9 +70,11 @@ const Login = async (req, res) => {
 
         await user.restId.populate('menu')
 
-        if(user.restId.menu != null) {for(let i = 0; i < user.restId.menu.categoryId.length; i++) {
-          await user.restId.menu.categoryId.populate(categoryId[i])
-        }}
+        if (user.restId.menu != null) {
+          for (let i = 0; i < user.restId.menu.categoryId.length; i++) {
+            await user.restId.menu.categoryId.populate(categoryId[i])
+          }
+        }
 
         let payload = {
           _id: user._id,
