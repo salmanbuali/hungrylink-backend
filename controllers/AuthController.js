@@ -62,9 +62,21 @@ const Login = async (req, res) => {
     )
     // If they match, constructs a payload object of values we want on the front end
     if (matched) {
-        if(user.type === "restaurant"){
+      if (user.type === 'restaurant') {
+        await user.populate('restId')
+
+        for (let i = 0; i < user.orders.length; i++) {
+          await user.populate(orders[i])
+        }
+
+        await user.restId.populate('menu')
+
+        if(user.restId.menu != null) {for(let i = 0; i < user.restId.menu.categoryId.length; i++) {
+          await user.restId.menu.categoryId.populate(categoryId[i])
+        }}
+
         let payload = {
-          id: user.id,
+          _id: user._id,
           name: user.name,
           email: user.email,
           avatar: user.avatar,
@@ -76,17 +88,19 @@ const Login = async (req, res) => {
         }
         let token = middleware.createToken(payload)
         return res.send({ user: payload, token })
-      }
-      else {
+      } else {
+        for (let i = 0; i < user.orders.length; i++) {
+          await user.populate(orders[i])
+        }
         let payload = {
-          id: user.id,
+          _id: user._id,
           name: user.name,
           email: user.email,
           avatar: user.avatar,
           type: user.type,
           contact: user.contact,
           address: user.address,
-          orders: user.orders,
+          orders: user.orders
         }
         let token = middleware.createToken(payload)
         return res.send({ user: payload, token })
@@ -117,8 +131,14 @@ const UpdatePassword = async (req, res) => {
         passwordDigest
       })
       let payload = {
-        id: user.id,
-        email: user.email
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        type: user.type,
+        contact: user.contact,
+        address: user.address,
+        orders: user.orders
       }
       return res.send({ status: 'Password Updated!', user: payload })
     }

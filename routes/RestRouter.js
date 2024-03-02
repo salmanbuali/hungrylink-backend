@@ -9,4 +9,22 @@ router.post(
   controller.createMenu
 )
 
+router.post(
+  '/newCategory',
+  middleware.stripToken,
+  middleware.verifyToken,
+  controller.createCategory
+)
+
+router.post(
+  '/newItem',
+  middleware.stripToken,
+  middleware.verifyToken,
+  controller.createItem
+)
+
+router.get(
+  '/menu/:restId',
+  controller.getRestDetails
+)
 module.exports = router
