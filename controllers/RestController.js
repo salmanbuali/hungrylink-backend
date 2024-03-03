@@ -5,7 +5,6 @@ const { Item } = require('../models')
 const { Category } = require('../models')
 
 const createMenu = async (req, res) => {
-  console.log(req)
   const user = await User.findById(req.body._id)
 
   if (user.type === 'restaurant') {
