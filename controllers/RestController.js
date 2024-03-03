@@ -7,7 +7,7 @@ const { Category } = require('../models')
 const createMenu = async (req, res) => {
   console.log(req)
   const user = await User.findById(req.body._id)
-
+  console.log(user)
   if (user.type === 'restaurant') {
     let restaurant = await Rest.findById(user.restId)
     const newMenu = await Menu.create({
@@ -51,34 +51,35 @@ const createItem = async (req, res) => {
   res.send(newItem)
 }
 
-// const getRestDetails = async (req, res) => {
-//   const restDetails = await Rest.findById(req.params.restId)
-//   const userRest = await User.findOne({ restId: req.params.restId })
-//   await restDetails.populate('menu')
-//   if (restDetails.menu.categoryId != null) {
-//     for (let i = 0; i < restDetails.menu.categoryId.length; i++) {
-//       await restDetails.menu.categoryId.populate(restDetails.menu.categoryId[i])
-//     }
-//   }
-//   const response = {
-//     restDetails,
-//     userRest
-//   }
-
-//   res.send(response)
-// }
-
 const getRestDetails = async (req, res) => {
-    const restDetails = await Rest.findById(req.params.restId).populate(
-      'menu.categoryId'
-    )
-    const userRest = await User.findOne({ restId: req.params.restId })
+  const restDetails = await (
+    await Rest.findById(req.params.restId)
+  ).populate({
+    path: 'menu',
+    populate: { path: 'categoryId' }
+  })
+  const userRest = await User.findOne({ restId: req.params.restId })
+  // await restDetails.populate('menu')
 
-    const response = {
-      restDetails,
-      userRest
-    }
-    res.send(response)
+  // if (restDetails.menu.categoryId != null) {
+  //   const menu = await Menu.findById(restDetails.menu._id)
+  //   console.log(menu)
+  //   for (let i = 0; i < menu.categoryId.length; i++) {
+  //     await menu.categoryId.populate(menu.categoryId[i])
+  //   }
+  //   console.log(restDetails)
+  // }
+  console.log(restDetails)
+  const response = {
+    restDetails,
+    userRest
+  }
+
+  res.send(response)
+}
+
+const getCategories = async (req, res) => {
+  const menu = await Menu.findById(req.body.menuId)
 }
 
 module.exports = {
