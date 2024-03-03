@@ -9,6 +9,13 @@ router.post(
   controller.createMenu
 )
 
+router.get(
+  '/newMenu/:id',
+  middleware.stripToken,
+  middleware.verifyToken,
+  controller.getMenu
+)
+
 router.post(
   '/newCategory',
   middleware.stripToken,
