@@ -36,12 +36,13 @@ const createCategory = async (req, res) => {
 }
 
 const createItem = async (req, res) => {
+  console.log(req.body)
   const newItem = await Item.create({
-    name: req.body.itemName,
-    price: req.body.price,
-    qty: req.body.qty,
-    desc: req.body.desc.split(','),
-    pic: req.body.itemPic
+    name: req.body.formValues.name,
+    price: req.body.formValues.price,
+    qty: req.body.formValues.qty,
+    desc: req.body.formValues.desc,
+    pic: req.body.formValues.pic
   })
   await Category.updateOne(
     { _id: req.body.categoryId },
