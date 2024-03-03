@@ -78,13 +78,22 @@ const getRestDetails = async (req, res) => {
   res.send(response)
 }
 
-const getCategories = async (req, res) => {
-  const menu = await Menu.findById(req.body.menuId)
+const getMenu = async (req, res) => {
+  let menuExist
+  const user = await User.findById(req.params.id).populate('restId')
+  if (user.restId.menu !== null) {
+    menuExist = true
+  } else {
+    menuExist = false
+  }
+
+  res.send(menuExist)
 }
 
 module.exports = {
   createMenu,
   createCategory,
   createItem,
-  getRestDetails
+  getRestDetails,
+  getMenu
 }
