@@ -36,7 +36,7 @@ const createCategory = async (req, res) => {
 }
 
 const createItem = async (req, res) => {
-  console.log(req.body)
+  console.log('this is the reqbody', req.body)
   const newItem = await Item.create({
     name: req.body.formValues.name,
     price: req.body.formValues.price,
@@ -45,7 +45,7 @@ const createItem = async (req, res) => {
     pic: req.body.formValues.pic
   })
   await Category.updateOne(
-    { _id: req.body.categoryId },
+    { _id: req.body.catId },
     { $push: { items: newItem._id } }
   )
   res.send(newItem)
