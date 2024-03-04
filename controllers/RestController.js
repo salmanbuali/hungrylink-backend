@@ -58,17 +58,11 @@ const getRestDetails = async (req, res) => {
     path: 'menu',
     populate: { path: 'categoryId' }
   })
+  await restDetails.menu.populate({
+    path: 'categoryId',
+    populate: { path: 'items'}
+  })
   const userRest = await User.findOne({ restId: req.params.restId })
-  // await restDetails.populate('menu')
-
-  // if (restDetails.menu.categoryId != null) {
-  //   const menu = await Menu.findById(restDetails.menu._id)
-  //   console.log(menu)
-  //   for (let i = 0; i < menu.categoryId.length; i++) {
-  //     await menu.categoryId.populate(menu.categoryId[i])
-  //   }
-  //   console.log(restDetails)
-  // }
   console.log(restDetails)
   const response = {
     restDetails,
