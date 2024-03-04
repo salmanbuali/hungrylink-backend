@@ -30,8 +30,12 @@ router.post(
   controller.createItem
 )
 
-router.get(
-  '/menu/:restId',
-  controller.getRestDetails
-)
+router.get('/menu/:restId', controller.getRestDetails)
+
+router.get('/rest/cat/:itemId', controller.getCatItems)
+
+router.post('/newcuis', controller.createCuis)
+
+
 module.exports = router
+
