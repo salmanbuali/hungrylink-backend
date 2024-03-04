@@ -64,9 +64,7 @@ const Login = async (req, res) => {
       if (user.type === 'restaurant') {
         await user.populate('restId')
 
-        for (let i = 0; i < user.orders.length; i++) {
-          await user.populate(orders[i])
-        }
+        await user.populate('orders')
 
         await user.restId.populate('menu')
 
