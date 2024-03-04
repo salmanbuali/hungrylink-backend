@@ -20,6 +20,17 @@ const createMenu = async (req, res) => {
   }
 }
 
+const createCuis = async (req, res) => {
+  const user = await User.findById(req.body._id)
+  if (user.type === 'restaurant') {
+    let restaurant = await Rest.findById(user.restId)
+    await restaurant.updateOne(
+      { $push: { cuisine: newCuis } }
+    )
+    res.send(newCuis)
+  }
+}
+
 const createCategory = async (req, res) => {
   const user = await User.findById(req.body.user._id)
   const restaurant = await Rest.findById(user.restId)
@@ -36,7 +47,7 @@ const createCategory = async (req, res) => {
 }
 
 const createItem = async (req, res) => {
-  console.log(req.body)
+  console.log('this is the reqbody', req.body)
   const newItem = await Item.create({
     name: req.body.formValues.name,
     price: req.body.formValues.price,
@@ -45,7 +56,7 @@ const createItem = async (req, res) => {
     pic: req.body.formValues.pic
   })
   await Category.updateOne(
-    { _id: req.body.categoryId },
+    { _id: req.body.catId },
     { $push: { items: newItem._id } }
   )
   res.send(newItem)
@@ -84,8 +95,25 @@ const getMenu = async (req, res) => {
   res.send(menuExist)
 }
 
-const createOrder = async ( req, res ) => {
+const createOrder = async ( req, res ) => {}
   
+const getCatItems = async (req, res) => {
+  console.log('catdetails', req.params)
+  const catDetails = await (
+    await Category.findById(req.params.catId)
+  ).populate({
+    path: 'items',
+    populate: { path: 'categoryId' }
+  })
+  const catItems = await Category.findOne({ catId: req.params.items })
+
+  console.log(catDetails)
+  const response = {
+    catDetails,
+    catItems
+  }
+
+  res.send(response)
 }
 
 module.exports = {
@@ -93,5 +121,7 @@ module.exports = {
   createCategory,
   createItem,
   getRestDetails,
-  getMenu
+  getMenu,
+  getCatItems,
+  createCuis
 }
