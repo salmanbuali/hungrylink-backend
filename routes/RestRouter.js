@@ -45,6 +45,6 @@ router.post('/newcuis', controller.createCuis)
 
 router.get('/cuis/:cuis', controller.getCuis)
 
+router.get('/allrest', controller.getAllRests)
 
 module.exports = router
-

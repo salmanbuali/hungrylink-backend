@@ -72,7 +72,7 @@ const getRestDetails = async (req, res) => {
   })
   await restDetails.menu.populate({
     path: 'categoryId',
-    populate: { path: 'items'}
+    populate: { path: 'items' }
   })
   const userRest = await User.findOne({ restId: req.params.restId })
   console.log(restDetails)
@@ -80,8 +80,12 @@ const getRestDetails = async (req, res) => {
     restDetails,
     userRest
   }
-
   res.send(response)
+}
+
+const getAllRests = async (req, res) => {
+  const allRest = await User.find({ restId: { $exists: true } })
+  res.send(allRest)
 }
 
 const getMenu = async (req, res) => {
@@ -96,7 +100,6 @@ const getMenu = async (req, res) => {
   res.send(menuExist)
 }
 
-
 const getCuis = async (req, res) => {
   let cuisExist
   const user = await User.findById(req.params.cuis)
@@ -109,17 +112,17 @@ const getCuis = async (req, res) => {
   res.send(cuisExist)
 }
 
-
-const createOrder = async ( req, res ) => {
-  
+const createOrder = async (req, res) => {
   console.log(req.body)
   let itemsIds = []
   let total = 0
-  for (let i= 0; i < req.body.cart.length; i++){
+  for (let i = 0; i < req.body.cart.length; i++) {
     itemsIds.push(req.body.cart[i]._id)
-    total = total + (req.body.cart[i].userQty * req.body. cart[i].price)
-   await Item.updateOne({_id: req.body.cart[i]._id}, 
-    { qty: req.body.cart[i].qty - req.body.cart[i].userQty})
+    total = total + req.body.cart[i].userQty * req.body.cart[i].price
+    await Item.updateOne(
+      { _id: req.body.cart[i]._id },
+      { qty: req.body.cart[i].qty - req.body.cart[i].userQty }
+    )
   }
   const newCustOrder = await Order.create({
     items: itemsIds,
@@ -134,14 +137,14 @@ const createOrder = async ( req, res ) => {
 
   await User.updateOne(
     { _id: req.body.user._id },
-    { $push: { orders: newCustOrder._id }})
+    { $push: { orders: newCustOrder._id } }
+  )
 
   await User.updateOne(
     { _id: req.body.r_id },
-    { $push: { orders: newRestOrder._id }})
-
+    { $push: { orders: newRestOrder._id } }
+  )
 }
-  
 
 const getCatItems = async (req, res) => {
   console.log('catdetails', req.params)
@@ -171,6 +174,6 @@ module.exports = {
   getCatItems,
   createCuis,
   getCuis,
-  createOrder
-
+  createOrder,
+  getAllRests
 }
