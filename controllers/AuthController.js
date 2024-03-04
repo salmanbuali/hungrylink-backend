@@ -17,7 +17,7 @@ const Register = async (req, res) => {
       if (type === 'restaurant') {
         const typeRest = await Rest.create({
           menu: null,
-          cuisine: null
+          cuisine: []
         })
         const restId = typeRest._id
         const user = await User.create({

@@ -22,14 +22,14 @@ const createMenu = async (req, res) => {
 }
 
 const createCuis = async (req, res) => {
+  console.log('cuisines ' + req.body)
   const user = await User.findById(req.body._id)
-  if (user.type === 'restaurant') {
-    let restaurant = await Rest.findById(user.restId)
-    await restaurant.updateOne(
-      { $push: { cuisine: newCuis } }
-    )
-    res.send(newCuis)
-  }
+  let restaurant = await Rest.findById(user.restId)
+  const newCuis = req.body.checkBoxValues
+  newCuis.forEach(async (cuis) => {
+    await restaurant.updateOne({ $push: { cuisine: cuis } })
+  })
+  res.send(newCuis)
 }
 
 const createCategory = async (req, res) => {
@@ -96,6 +96,20 @@ const getMenu = async (req, res) => {
   res.send(menuExist)
 }
 
+
+const getCuis = async (req, res) => {
+  let cuisExist
+  const user = await User.findById(req.params.cuis)
+  let restaurant = await Rest.findById(user.restId)
+  if (restaurant.cuisine.length > 0) {
+    cuisExist = restaurant.cuisine
+  } else {
+    cuisExist = false
+  }
+  res.send(cuisExist)
+}
+
+
 const createOrder = async ( req, res ) => {
   
   console.log(req.body)
@@ -128,6 +142,7 @@ const createOrder = async ( req, res ) => {
 
 }
   
+
 const getCatItems = async (req, res) => {
   console.log('catdetails', req.params)
   const catDetails = await (
@@ -155,5 +170,7 @@ module.exports = {
   getMenu,
   getCatItems,
   createCuis,
+  getCuis,
   createOrder
+
 }
