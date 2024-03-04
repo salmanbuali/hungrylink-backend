@@ -84,6 +84,10 @@ const getMenu = async (req, res) => {
   res.send(menuExist)
 }
 
+const createOrder = async ( req, res ) => {
+  
+}
+
 module.exports = {
   createMenu,
   createCategory,
