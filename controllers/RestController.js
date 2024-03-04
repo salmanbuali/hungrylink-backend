@@ -20,6 +20,17 @@ const createMenu = async (req, res) => {
   }
 }
 
+const createCuis = async (req, res) => {
+  const user = await User.findById(req.body._id)
+  if (user.type === 'restaurant') {
+    let restaurant = await Rest.findById(user.restId)
+    await restaurant.updateOne(
+      { $push: { cuisine: newCuis } }
+    )
+    res.send(newCuis)
+  }
+}
+
 const createCategory = async (req, res) => {
   const user = await User.findById(req.body.user._id)
   const restaurant = await Rest.findById(user.restId)
@@ -90,10 +101,31 @@ const getMenu = async (req, res) => {
   res.send(menuExist)
 }
 
+const getCatItems = async (req, res) => {
+  console.log('catdetails', req.params)
+  const catDetails = await (
+    await Category.findById(req.params.catId)
+  ).populate({
+    path: 'items',
+    populate: { path: 'categoryId' }
+  })
+  const catItems = await Category.findOne({ catId: req.params.items })
+
+  console.log(catDetails)
+  const response = {
+    catDetails,
+    catItems
+  }
+
+  res.send(response)
+}
+
 module.exports = {
   createMenu,
   createCategory,
   createItem,
   getRestDetails,
-  getMenu
+  getMenu,
+  getCatItems,
+  createCuis
 }
