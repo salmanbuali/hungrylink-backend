@@ -3,6 +3,7 @@ const { Menu } = require('../models')
 const { User } = require('../models')
 const { Item } = require('../models')
 const { Category } = require('../models')
+const { Order } = require('../models')
 
 const createMenu = async (req, res) => {
   const user = await User.findById(req.body._id)
@@ -69,17 +70,11 @@ const getRestDetails = async (req, res) => {
     path: 'menu',
     populate: { path: 'categoryId' }
   })
+  await restDetails.menu.populate({
+    path: 'categoryId',
+    populate: { path: 'items'}
+  })
   const userRest = await User.findOne({ restId: req.params.restId })
-  // await restDetails.populate('menu')
-
-  // if (restDetails.menu.categoryId != null) {
-  //   const menu = await Menu.findById(restDetails.menu._id)
-  //   console.log(menu)
-  //   for (let i = 0; i < menu.categoryId.length; i++) {
-  //     await menu.categoryId.populate(menu.categoryId[i])
-  //   }
-  //   console.log(restDetails)
-  // }
   console.log(restDetails)
   const response = {
     restDetails,
@@ -101,6 +96,7 @@ const getMenu = async (req, res) => {
   res.send(menuExist)
 }
 
+
 const getCuis = async (req, res) => {
   let cuisExist
   const user = await User.findById(req.params.cuis)
@@ -112,6 +108,40 @@ const getCuis = async (req, res) => {
   }
   res.send(cuisExist)
 }
+
+
+const createOrder = async ( req, res ) => {
+  
+  console.log(req.body)
+  let itemsIds = []
+  let total = 0
+  for (let i= 0; i < req.body.cart.length; i++){
+    itemsIds.push(req.body.cart[i]._id)
+    total = total + (req.body.cart[i].userQty * req.body. cart[i].price)
+   await Item.updateOne({_id: req.body.cart[i]._id}, 
+    { qty: req.body.cart[i].qty - req.body.cart[i].userQty})
+  }
+  const newCustOrder = await Order.create({
+    items: itemsIds,
+    total: total,
+    userId: req.body.user._id
+  })
+  const newRestOrder = await Order.create({
+    items: itemsIds,
+    total: total,
+    userId: req.body.r_id
+  })
+
+  await User.updateOne(
+    { _id: req.body.user._id },
+    { $push: { orders: newCustOrder._id }})
+
+  await User.updateOne(
+    { _id: req.body.r_id },
+    { $push: { orders: newRestOrder._id }})
+
+}
+  
 
 const getCatItems = async (req, res) => {
   console.log('catdetails', req.params)
@@ -140,5 +170,7 @@ module.exports = {
   getMenu,
   getCatItems,
   createCuis,
-  getCuis
+  getCuis,
+  createOrder
+
 }
