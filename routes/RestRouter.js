@@ -30,6 +30,13 @@ router.post(
   controller.createItem
 )
 
+router.post(
+  '/newOrder',
+  middleware.stripToken,
+  middleware.verifyToken,
+  controller.createOrder
+)
+
 router.get('/menu/:restId', controller.getRestDetails)
 
 router.get('/rest/cat/:itemId', controller.getCatItems)
