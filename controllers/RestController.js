@@ -70,7 +70,7 @@ const getRestDetails = async (req, res) => {
     path: 'menu',
     populate: { path: 'categoryId' }
   })
-  await restDetails.menu.populate({
+  await restDetails?.menu?.populate({
     path: 'categoryId',
     populate: { path: 'items'}
   })
