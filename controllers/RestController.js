@@ -165,6 +165,13 @@ const getCatItems = async (req, res) => {
   res.send(response)
 }
 
+// const getAllRests = async (req, res) => {
+//   const allRest = await User.find({ restId: { $exists: true } })
+//   res.send(allRest)
+// }
+
+const getAllOrders = () => {}
+
 module.exports = {
   createMenu,
   createCategory,
@@ -175,5 +182,6 @@ module.exports = {
   createCuis,
   getCuis,
   createOrder,
-  getAllRests
+  getAllRests,
+  getAllOrders
 }

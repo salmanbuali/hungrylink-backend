@@ -47,4 +47,6 @@ router.get('/cuis/:cuis', controller.getCuis)
 
 router.get('/allrest', controller.getAllRests)
 
+router.get('/allorders', controller.getAllOrders)
+
 module.exports = router
