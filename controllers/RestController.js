@@ -21,6 +21,13 @@ const createMenu = async (req, res) => {
   }
 }
 
+const updateItem = async (req, res) => {
+  const itemToUpdate = Item.findOneAndUpdate(
+    { _id: req.body._id },
+    { qty: req.body.newQty }
+  )
+}
+
 const createCuis = async (req, res) => {
   console.log('cuisines ' + req.body)
   const user = await User.findById(req.body._id)
@@ -70,7 +77,7 @@ const getRestDetails = async (req, res) => {
     path: 'menu',
     populate: { path: 'categoryId' }
   })
-  await restDetails.menu.populate({
+  await restDetails?.menu?.populate({
     path: 'categoryId',
     populate: { path: 'items' }
   })
@@ -170,7 +177,11 @@ const getCatItems = async (req, res) => {
 //   res.send(allRest)
 // }
 
-const getAllOrders = () => {}
+const getAllOrders = async (req, res) => {
+  const user = await User.findById(req.params.userId)
+  const allOrders = await Order.find({ userId: user._id })
+  res.send(allOrders)
+}
 
 module.exports = {
   createMenu,
@@ -183,5 +194,6 @@ module.exports = {
   getCuis,
   createOrder,
   getAllRests,
-  getAllOrders
+  getAllOrders,
+  updateItem
 }

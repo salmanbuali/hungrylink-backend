@@ -65,9 +65,7 @@ const Login = async (req, res) => {
       if (user.type === 'restaurant') {
         await user.populate('restId')
 
-        for (let i = 0; i < user.orders.length; i++) {
-          await user.populate(orders[i])
-        }
+        await user.populate('orders')
 
         await user.restId.populate('menu')
 
@@ -91,9 +89,8 @@ const Login = async (req, res) => {
         let token = middleware.createToken(payload)
         return res.send({ user: payload, token })
       } else {
-        for (let i = 0; i < user.orders.length; i++) {
-          await user.populate(orders[i])
-        }
+        await user.populate('orders')
+        console.log('this is populate', user)
         let payload = {
           _id: user._id,
           name: user.name,
