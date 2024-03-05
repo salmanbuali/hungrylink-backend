@@ -21,6 +21,13 @@ const createMenu = async (req, res) => {
   }
 }
 
+const updateItem = async ( req, res ) => {
+  const itemToUpdate = Item.findOneAndUpdate(
+    { _id: req.body._id },
+    { qty: req.body.newQty }  
+    )
+}
+
 const createCuis = async (req, res) => {
   console.log('cuisines ' + req.body)
   const user = await User.findById(req.body._id)
@@ -171,6 +178,7 @@ module.exports = {
   getCatItems,
   createCuis,
   getCuis,
-  createOrder
+  createOrder,
+  updateItem
 
 }
