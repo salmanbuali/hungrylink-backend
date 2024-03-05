@@ -22,10 +22,12 @@ const createMenu = async (req, res) => {
 }
 
 const updateItem = async ( req, res ) => {
-  const itemToUpdate = Item.findOneAndUpdate(
+  console.log(req.body)
+  const itemToUpdate = await Item.findOneAndUpdate(
     { _id: req.body._id },
     { qty: req.body.newQty }  
     )
+  res.send(itemToUpdate)
 }
 
 const createCuis = async (req, res) => {
