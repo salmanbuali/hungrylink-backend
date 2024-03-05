@@ -156,12 +156,16 @@ const UpdatePassword = async (req, res) => {
 const UpdateUser = async (req, res) => {
   console.log(req.body)
   const { name, avatar, contact, address } = req.body
-  let user = await User.findByIdAndUpdate(req.params.userid, {
-    name,
-    avatar,
-    contact,
-    address
-  })
+  let user = await User.findByIdAndUpdate(
+    req.params.userid,
+    {
+      name,
+      avatar,
+      contact,
+      address
+    },
+    { new: true }
+  )
   res.send(user)
 }
 
@@ -170,10 +174,16 @@ const CheckSession = async (req, res) => {
   res.send(payload)
 }
 
+const getUserInfo = async (req, res) => {
+  const user = await User.findById(req.params.id)
+  res.send(user)
+}
+
 module.exports = {
   Register,
   Login,
   UpdatePassword,
   CheckSession,
-  UpdateUser
+  UpdateUser,
+  getUserInfo
 }

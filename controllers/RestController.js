@@ -21,11 +21,11 @@ const createMenu = async (req, res) => {
   }
 }
 
-const updateItem = async ( req, res ) => {
+const updateItem = async (req, res) => {
   const itemToUpdate = await Item.findOneAndUpdate(
     { _id: req.body._id },
-    { qty: req.body.newQty }  
-    )
+    { qty: req.body.newQty }
+  )
   res.send(itemToUpdate)
 }
 
