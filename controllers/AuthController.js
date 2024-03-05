@@ -48,6 +48,7 @@ const Register = async (req, res) => {
     throw error
   }
 }
+
 const Login = async (req, res) => {
   try {
     // Extracts the necessary fields from the request body
@@ -152,6 +153,18 @@ const UpdatePassword = async (req, res) => {
   }
 }
 
+const UpdateUser = async (req, res) => {
+  console.log(req.body)
+  const { name, avatar, contact, address } = req.body
+  let user = await User.findByIdAndUpdate(req.params.userid, {
+    name,
+    avatar,
+    contact,
+    address
+  })
+  res.send(user)
+}
+
 const CheckSession = async (req, res) => {
   const { payload } = res.locals
   res.send(payload)
@@ -161,5 +174,6 @@ module.exports = {
   Register,
   Login,
   UpdatePassword,
-  CheckSession
+  CheckSession,
+  UpdateUser
 }

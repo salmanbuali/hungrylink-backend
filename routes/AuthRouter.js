@@ -17,4 +17,6 @@ router.get(
   controller.CheckSession
 )
 
+router.put('/userupdate/:userid', controller.UpdateUser)
+
 module.exports = router
