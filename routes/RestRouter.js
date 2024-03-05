@@ -41,10 +41,20 @@ router.get('/menu/:restId', controller.getRestDetails)
 
 router.get('/rest/cat/:itemId', controller.getCatItems)
 
-router.post('/newcuis', controller.createCuis)
+router.put(
+  '/updateItem',
+  middleware.stripToken,
+  middleware.verifyToken,
+  controller.updateItem
+)
+
+router.post(
+  '/newcuis',
+  middleware.stripToken,
+  middleware.verifyToken,
+  controller.createCuis
+)
 
 router.get('/cuis/:cuis', controller.getCuis)
 
-
 module.exports = router
-
