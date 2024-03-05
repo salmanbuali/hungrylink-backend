@@ -91,7 +91,9 @@ const getRestDetails = async (req, res) => {
 }
 
 const getAllRests = async (req, res) => {
-  const allRest = await User.find({ restId: { $exists: true } })
+  const allRest = await User.find({ restId: { $exists: true } }).populate(
+    'restId'
+  )
   res.send(allRest)
 }
 
@@ -172,14 +174,9 @@ const getCatItems = async (req, res) => {
   res.send(response)
 }
 
-// const getAllRests = async (req, res) => {
-//   const allRest = await User.find({ restId: { $exists: true } })
-//   res.send(allRest)
-// }
-
 const getAllOrders = async (req, res) => {
   const user = await User.findById(req.params.userId)
-  const allOrders = await Order.find({ userId: user._id })
+  const allOrders = await Order.find({ userId: user._id }).populate('items')
   res.send(allOrders)
 }
 
