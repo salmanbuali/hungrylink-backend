@@ -21,11 +21,11 @@ const createMenu = async (req, res) => {
   }
 }
 
-const updateItem = async ( req, res ) => {
+const updateItem = async (req, res) => {
   const itemToUpdate = Item.findOneAndUpdate(
     { _id: req.body._id },
-    { qty: req.body.newQty }  
-    )
+    { qty: req.body.newQty }
+  )
 }
 
 const createCuis = async (req, res) => {
@@ -79,7 +79,7 @@ const getRestDetails = async (req, res) => {
   })
   await restDetails?.menu?.populate({
     path: 'categoryId',
-    populate: { path: 'items'}
+    populate: { path: 'items' }
   })
   const userRest = await User.findOne({ restId: req.params.restId })
   console.log(restDetails)
@@ -103,7 +103,6 @@ const getMenu = async (req, res) => {
   res.send(menuExist)
 }
 
-
 const getCuis = async (req, res) => {
   let cuisExist
   const user = await User.findById(req.params.cuis)
@@ -116,17 +115,17 @@ const getCuis = async (req, res) => {
   res.send(cuisExist)
 }
 
-
-const createOrder = async ( req, res ) => {
-  
+const createOrder = async (req, res) => {
   console.log(req.body)
   let itemsIds = []
   let total = 0
-  for (let i= 0; i < req.body.cart.length; i++){
+  for (let i = 0; i < req.body.cart.length; i++) {
     itemsIds.push(req.body.cart[i]._id)
-    total = total + (req.body.cart[i].userQty * req.body. cart[i].price)
-   await Item.updateOne({_id: req.body.cart[i]._id}, 
-    { qty: req.body.cart[i].qty - req.body.cart[i].userQty})
+    total = total + req.body.cart[i].userQty * req.body.cart[i].price
+    await Item.updateOne(
+      { _id: req.body.cart[i]._id },
+      { qty: req.body.cart[i].qty - req.body.cart[i].userQty }
+    )
   }
   const newCustOrder = await Order.create({
     items: itemsIds,
@@ -141,14 +140,14 @@ const createOrder = async ( req, res ) => {
 
   await User.updateOne(
     { _id: req.body.user._id },
-    { $push: { orders: newCustOrder._id }})
+    { $push: { orders: newCustOrder._id } }
+  )
 
   await User.updateOne(
     { _id: req.body.r_id },
-    { $push: { orders: newRestOrder._id }})
-
+    { $push: { orders: newRestOrder._id } }
+  )
 }
-  
 
 const getCatItems = async (req, res) => {
   console.log('catdetails', req.params)
@@ -169,6 +168,15 @@ const getCatItems = async (req, res) => {
   res.send(response)
 }
 
+const deleteCat = async (req, res) => {
+  try {
+    const cat = await Category.deleteOne({ _id: req.body.catId })
+    res.send('deleted')
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   createMenu,
   createCategory,
@@ -179,6 +187,6 @@ module.exports = {
   createCuis,
   getCuis,
   createOrder,
-  updateItem
-
+  updateItem,
+  deleteCat
 }

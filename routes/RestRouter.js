@@ -57,4 +57,6 @@ router.post(
 
 router.get('/cuis/:cuis', controller.getCuis)
 
+router.delete('/deleteCat', controller.deleteCat)
+
 module.exports = router
