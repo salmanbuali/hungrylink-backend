@@ -176,6 +176,15 @@ const getCatItems = async (req, res) => {
   res.send(response)
 }
 
+const deleteCat = async (req, res) => {
+  try {
+    const cat = await Category.deleteOne({ _id: req.body.catId })
+    res.send('deleted')
+  } catch (error) {
+    throw error
+  }
+}
+
 const getAllOrders = async (req, res) => {
   const user = await User.findById(req.params.userId)
   const allOrders = await Order.find({ userId: user._id }).populate('items')
@@ -192,6 +201,8 @@ module.exports = {
   createCuis,
   getCuis,
   createOrder,
+  updateItem,
+  deleteCat,
   getAllRests,
   getAllOrders,
   updateItem
