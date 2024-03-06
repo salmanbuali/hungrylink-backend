@@ -22,10 +22,11 @@ const createMenu = async (req, res) => {
 }
 
 const updateItem = async (req, res) => {
-  const itemToUpdate = Item.findOneAndUpdate(
+  const itemToUpdate = await Item.findOneAndUpdate(
     { _id: req.body._id },
     { qty: req.body.newQty }
   )
+  res.send(itemToUpdate)
 }
 
 const createCuis = async (req, res) => {
@@ -87,8 +88,14 @@ const getRestDetails = async (req, res) => {
     restDetails,
     userRest
   }
-
   res.send(response)
+}
+
+const getAllRests = async (req, res) => {
+  const allRest = await User.find({ restId: { $exists: true } }).populate(
+    'restId'
+  )
+  res.send(allRest)
 }
 
 const getMenu = async (req, res) => {
@@ -147,6 +154,7 @@ const createOrder = async (req, res) => {
     { _id: req.body.r_id },
     { $push: { orders: newRestOrder._id } }
   )
+  res.send(true)
 }
 
 const getCatItems = async (req, res) => {
@@ -177,6 +185,12 @@ const deleteCat = async (req, res) => {
   }
 }
 
+const getAllOrders = async (req, res) => {
+  const user = await User.findById(req.params.userId)
+  const allOrders = await Order.find({ userId: user._id }).populate('items')
+  res.send(allOrders)
+}
+
 module.exports = {
   createMenu,
   createCategory,
@@ -188,5 +202,8 @@ module.exports = {
   getCuis,
   createOrder,
   updateItem,
-  deleteCat
+  deleteCat,
+  getAllRests,
+  getAllOrders,
+  updateItem
 }

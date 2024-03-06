@@ -59,4 +59,8 @@ router.get('/cuis/:cuis', controller.getCuis)
 
 router.delete('/deleteCat', controller.deleteCat)
 
+router.get('/allrest', controller.getAllRests)
+
+router.get('/allorders/:userId', controller.getAllOrders)
+
 module.exports = router
