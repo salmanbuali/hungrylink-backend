@@ -137,7 +137,8 @@ const createOrder = async (req, res) => {
   const newCustOrder = await Order.create({
     items: itemsIds,
     total: total,
-    userId: req.body.user._id
+    userId: req.body.user._id,
+    from: req.body.r_id
   })
   const newRestOrder = await Order.create({
     items: itemsIds,
