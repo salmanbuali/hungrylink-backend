@@ -154,6 +154,7 @@ const createOrder = async (req, res) => {
     { _id: req.body.r_id },
     { $push: { orders: newRestOrder._id } }
   )
+  res.send(true)
 }
 
 const getCatItems = async (req, res) => {
