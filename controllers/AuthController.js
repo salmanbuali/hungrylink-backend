@@ -90,7 +90,7 @@ const Login = async (req, res) => {
         return res.send({ user: payload, token })
       } else {
         await user.populate('orders')
-        console.log('this is populate', user)
+  
         let payload = {
           _id: user._id,
           name: user.name,
