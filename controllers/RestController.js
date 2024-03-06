@@ -188,7 +188,9 @@ const deleteCat = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
   const user = await User.findById(req.params.userId)
-  const allOrders = await Order.find({ userId: user._id }).populate('items')
+  let allOrders = await Order.find({ userId: user._id })
+    .populate('items')
+    .populate('from')
   res.send(allOrders)
 }
 

@@ -154,7 +154,6 @@ const UpdatePassword = async (req, res) => {
 }
 
 const UpdateUser = async (req, res) => {
-  console.log(req.body)
   const { name, avatar, contact, address } = req.body
   let user = await User.findByIdAndUpdate(
     req.params.userid,
